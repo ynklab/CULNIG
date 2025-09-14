@@ -1,0 +1,118 @@
+seed: 42
+
+model:
+  model_name_or_path: google/gemma-3-12b-it
+
+dataset_name: qnli
+
+train:
+  lora: 
+    enabled: false
+    r: 32
+    lora_alpha: 64
+    lora_dropout: 0.0
+    bias: none
+
+  target_modules:
+    - layers.13.mlp.gate_proj # (count: 785)
+    - layers.13.mlp.up_proj # (count: 785)
+    - layers.13.mlp.down_proj # (count: 785)
+    - layers.12.mlp.gate_proj # (count: 685)
+    - layers.12.mlp.up_proj # (count: 685)
+    - layers.12.mlp.down_proj # (count: 685)
+    - layers.14.mlp.gate_proj # (count: 612)
+    - layers.14.mlp.up_proj # (count: 612)
+    - layers.14.mlp.down_proj # (count: 612)
+    - layers.10.mlp.gate_proj # (count: 491)
+    - layers.10.mlp.up_proj # (count: 491)
+    - layers.10.mlp.down_proj # (count: 491)
+    - layers.11.mlp.gate_proj # (count: 469)
+    - layers.11.mlp.up_proj # (count: 469)
+    - layers.11.mlp.down_proj # (count: 469)
+    - layers.7.mlp.gate_proj # (count: 429)
+    - layers.7.mlp.up_proj # (count: 429)
+    - layers.7.mlp.down_proj # (count: 429)
+    - layers.9.mlp.gate_proj # (count: 409)
+    - layers.9.mlp.up_proj # (count: 409)
+    - layers.9.mlp.down_proj # (count: 409)
+    # - layers.35.mlp.gate_proj # (count: 0)
+    # - layers.35.mlp.up_proj # (count: 0)
+    # - layers.35.mlp.down_proj # (count: 0)
+    # - layers.38.mlp.gate_proj # (count: 0)
+    # - layers.38.mlp.up_proj # (count: 0)
+    # - layers.38.mlp.down_proj # (count: 0)
+    # - layers.41.mlp.gate_proj # (count: 0)
+    # - layers.41.mlp.up_proj # (count: 0)
+    # - layers.41.mlp.down_proj # (count: 0)
+    # - layers.47.mlp.gate_proj # (count: 0)
+    # - layers.47.mlp.up_proj # (count: 0)
+    # - layers.47.mlp.down_proj # (count: 0)
+    # - layers.2.self_attn.q_proj # (count: 0)
+    # - layers.2.self_attn.k_proj # (count: 0)
+    # - layers.2.self_attn.v_proj # (count: 0)
+    # - layers.2.self_attn.o_proj # (count: 0)
+    # - layers.32.self_attn.q_proj # (count: 0)
+    # - layers.32.self_attn.k_proj # (count: 0)
+    # - layers.32.self_attn.v_proj # (count: 0)
+    # - layers.32.self_attn.o_proj # (count: 0)
+    # - layers.33.self_attn.q_proj # (count: 0)
+    # - layers.33.self_attn.k_proj # (count: 0)
+    # - layers.33.self_attn.v_proj # (count: 0)
+    # - layers.33.self_attn.o_proj # (count: 0)
+    # - layers.35.self_attn.q_proj # (count: 0)
+    # - layers.35.self_attn.k_proj # (count: 0)
+    # - layers.35.self_attn.v_proj # (count: 0)
+    # - layers.35.self_attn.o_proj # (count: 0)
+    # - layers.36.self_attn.q_proj # (count: 0)
+    # - layers.36.self_attn.k_proj # (count: 0)
+    # - layers.36.self_attn.v_proj # (count: 0)
+    # - layers.36.self_attn.o_proj # (count: 0)
+    # - layers.37.self_attn.q_proj # (count: 0)
+    # - layers.37.self_attn.k_proj # (count: 0)
+    # - layers.37.self_attn.v_proj # (count: 0)
+    # - layers.37.self_attn.o_proj # (count: 0)
+    # - layers.38.self_attn.q_proj # (count: 0)
+    # - layers.38.self_attn.k_proj # (count: 0)
+    # - layers.38.self_attn.v_proj # (count: 0)
+    # - layers.38.self_attn.o_proj # (count: 0)
+    # - layers.39.self_attn.q_proj # (count: 0)
+    # - layers.39.self_attn.k_proj # (count: 0)
+    # - layers.39.self_attn.v_proj # (count: 0)
+    # - layers.39.self_attn.o_proj # (count: 0)
+    # - layers.40.self_attn.q_proj # (count: 0)
+    # - layers.40.self_attn.k_proj # (count: 0)
+    # - layers.40.self_attn.v_proj # (count: 0)
+    # - layers.40.self_attn.o_proj # (count: 0)
+    # - layers.41.self_attn.q_proj # (count: 0)
+    # - layers.41.self_attn.k_proj # (count: 0)
+    # - layers.41.self_attn.v_proj # (count: 0)
+    # - layers.41.self_attn.o_proj # (count: 0)
+    # - layers.43.self_attn.q_proj # (count: 0)
+    # - layers.43.self_attn.k_proj # (count: 0)
+    # - layers.43.self_attn.v_proj # (count: 0)
+    # - layers.43.self_attn.o_proj # (count: 0)
+    # - layers.45.self_attn.q_proj # (count: 0)
+    # - layers.45.self_attn.k_proj # (count: 0)
+    # - layers.45.self_attn.v_proj # (count: 0)
+    # - layers.45.self_attn.o_proj # (count: 0)
+    # - layers.46.self_attn.q_proj # (count: 0)
+    # - layers.46.self_attn.k_proj # (count: 0)
+    # - layers.46.self_attn.v_proj # (count: 0)
+    # - layers.46.self_attn.o_proj # (count: 0)
+  target_layers: null
+  output_dir: ../model_outputs/gemma-3-12b-it-qnli-top-lr3
+  run_name: gemma-3-12b-it-qnli-top-lr3
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 8
+  gradient_accumulation_steps: 4
+  num_train_epochs: 3
+  learning_rate: 0.00003
+  warmup_ratio: 0
+  eval_strategy: "no"
+  eval_steps: null
+  eval_accumulation_steps: 8
+  save_strategy: "steps"
+  save_steps: 200
+  lr_scheduler_type: constant
+  optim: adamw_torch
+  logging_steps: 50
