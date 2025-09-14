@@ -2,7 +2,7 @@
 
 ![pipeline](/assets/CULNIG_pipeline.jpg)
 
-This repository provides code and datasets for the paper "Neuron-Level Analysis of Cultural Understanding in Large Language Models". We implement CULNIG (Culture Neuron Identification Pipeline with Gradient-based Scoring), a method to identify culture-general and culture-specific neurons in LLMs via gradient-based scoring.
+This repository provides code and datasets for the paper "Neuron-Level Analysis of Cultural Understanding in Large Language Models". We implement **CULNIG** (Culture Neuron Identification Pipeline with Gradient-based Scoring), a method to identify _culture-general_ and _culture-specific_ neurons in LLMs via gradient-based scoring.
 
 
 ## Setup
@@ -13,6 +13,7 @@ This repository provides code and datasets for the paper "Neuron-Level Analysis 
 uv venv
 uv sync
 ```
+    - Adjust the `pyproject.toml` file to meet your environment if necessary.
 - Prepare datasets used by `dataset.py`:
     - BLEnD: Download `US_questions.csv` from the [BLEnD repo](https://github.com/nlee0212/BLEnD) and place it under the `data/BLEnD/` directory (e.g., `data/BLEnD/US_questions.csv`).
     - WorldValuesBench: Follow the instructions in the [WorldValuesBench repo](https://github.com/Demon702/WorldValuesBench), then place `question_metadata.json`, `full_demographic_qa.tsv`, and `full_value_qa.tsv` under `data/WorldValuesBench/`.
@@ -35,12 +36,14 @@ uv sync
         ```bash
         uv run python CULNIG/decide_culture_general_neurons.py --model_name <model_name> --dataset_names blend
         ```
+    - Run this script after `CULNIG/calc_neuron_score.py` on both `blend` and `blendcontrol` as this script uses scores from both datasets to identify _culture-general_ neurons.
 
 - `CULNIG/decide_culture_specific_neuron.py`: Identify culture-specific neurons based on computed scores.
     - Example:
         ```bash
         uv run python CULNIG/decide_culture_specific_neuron.py --model_name <model_name> --dataset_names blend
         ```
+    - Run this script after `CULNIG/calc_neuron_score.py` on both `blend` and `blendcontrol` as this script uses scores from both datasets to identify _culture-specific_ neurons.
 
 - `CULNIG/decide_random_neuron.py`: Select random neurons as a baseline.
     - Example:
@@ -58,7 +61,7 @@ uv sync
         ```bash
         uv run python eval/evaluate.py --model_name <model_name> --dataset_name <dataset_name> --neuron_file <path_to_neuron_file> --operation suppress
         ```
-    - To evaluate without neuron manipulation, set `--neuron_file None`.
+    - To evaluate without neuron manipulation, unset `--neuron_file`.
     - Available datasets: `blend`, `culturalbench`, `normad`, `worldvaluesbench`, `countryrc`, `commonsenseqa`, `qnli`, `mrpc`
     - Operations: `suppress`, `enhance`
     - Results are saved under `outputs/`.
