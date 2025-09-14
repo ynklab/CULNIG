@@ -2,15 +2,24 @@ import argparse
 import logging
 from pathlib import Path
 import json
+import sys
 
 import pandas as pd
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, set_seed
 
+# add python path to import dataset and utils
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from dataset import load_dataset_neuron_scores
 from utils import register_hook
 
 BATCH_SIZE = 64
+CRC_TARGET_COUNTRIES = [
+    'China', 'Indonesia', 'Iran', 'Mexico', 'South Korea', 'Spain', 'UK', 'USA',
+]   # countries must be specified for CountryRC
+WVB_TARGET_COUNTRIES = [
+    'China', 'Indonesia', 'Iran', 'Mexico', 'South Korea', 'UK', 'USA',
+]   # Spain is not included in WVB
 
 
 def parse_args():
@@ -46,11 +55,19 @@ def evaluate_model(model, tokenizer, eval_dataset_name, logger, model_name, neur
     results = []
     result_columns = ['instruction_id', 'id', 'predicted_label', 'gold_label', 'alignment_score']
     # alignment_score is only for WorldValuesBench
+
+    # load dataset
+    if eval_dataset_name == 'countryrc':
+        target_countries = CRC_TARGET_COUNTRIES
+    elif eval_dataset_name == 'worldvaluesbench':
+        target_countries = WVB_TARGET_COUNTRIES
+    else:
+        target_countries = None
     dataloader = load_dataset_neuron_scores(
         dataset_names=[eval_dataset_name],
         tokenizer=tokenizer,
         batch_size=BATCH_SIZE,
-        target_countries=None,
+        target_countries=target_countries,
         target_data='all',
     )
 

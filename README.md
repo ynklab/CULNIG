@@ -1,4 +1,6 @@
-# Neuron-Level Analysis of Cultural Understanding in Large Language Models
+## Neuron-Level Analysis of Cultural Understanding in Large Language Models
+
+![pipeline](/assets/CULNIG_pipeline.png)
 
 This repository contains code and datasets for the paper "Neuron-Level Analysis of Cultural Understanding in Large Language Models".
 
@@ -13,7 +15,7 @@ We introduce a method to identify culture-general and culture-specific neurons i
 $ uv venv
 $ uv sync
 ```
-- Prepares datasets for identifying neurons and evaluating models (used in `dataset.py`)
+- Prepare datasets for identifying neurons and evaluating models (used in `dataset.py`)
   - For BLEnD, users must download the question file (`US_questions.csv`) from [repo](https://github.com/nlee0212/BLEnD) and place it in the `data` directory.
   - For WorldValuesBench, users must generate the dataset based on the instructions in the [repo](https://github.com/Demon702/WorldValuesBench) and place the generated files (`question_metadata.json`, `full_demographic_qa.tsv`, and `full_value_qa.tsv`) in the `data` directory.
 
@@ -25,7 +27,7 @@ $ uv sync
     - `$ uv run python CULNIG/calc_neuron_scores.py --model_name <model_name> --dataset_names blend`
     - available models: `google/gemma-3-12b-it`, `google/gemma-3-27b-it`, `Qwen/Qwen3-14B`, `meta-llama/Llama-3.1-8B-Instruct`, `microsoft/phi-4`, `tiiuae/Falcon3-10B-Instruct`
         - you can add other models by modifying the code.
-    - note that for the CULNIG method, you need to calculate neuron scores on `blend` and `blendcontrol` datasets
+    - through the CULNIG pipeline, you need to calculate neuron scores on `blend` and `blendcontrol` datasets
     - the script calculates neuron scores for CountryRC every time
 - `CULNIG/decide_culture_general_neurons.py`: Identify culture-general neurons based on the calculated neuron scores.
     - `$ uv run python CULNIG/decide_culture_general_neurons.py --model_name <model_name> --dataset_names blend --method max`
@@ -43,6 +45,7 @@ $ uv sync
     - available datasets: `blend`, `culturalbench`, `normad`, `worldvaluesbench`, `countryrc`, `commonsenseqa`, `qnli`, `mrpc`
     - available operations: `suppress`, `enhance`
     - the script saves the evaluation results in the `outputs` directory
+    - for BLEnD, the script evaluates on all questions (both BLEnD_neur and BLEnD_test). If you want to evaluate only on BLEnD_test, you can modify the code to load only the test questions as `target_data='all' -> 'non_neuron'`
 
 ### Fine-tuning
 

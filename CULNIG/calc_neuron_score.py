@@ -3,12 +3,15 @@ from collections import defaultdict
 import logging
 from pathlib import Path
 import json
+import sys
 
 import torch
 import torch.nn.functional as F
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers import set_seed
 
+# add python path to import dataset and utils
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from dataset import load_dataset_neuron_scores
 from utils import get_text_model, get_target_module
 

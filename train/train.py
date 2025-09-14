@@ -4,6 +4,7 @@ import os
 import logging
 import psutil
 import yaml
+import sys
 
 from datasets import load_dataset
 import numpy as np
@@ -16,6 +17,8 @@ from peft import LoraConfig, get_peft_model, TaskType
 from transformers import set_seed
 import wandb
 
+# add python path to import dataset and utils
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from prompts import NEURON_PROMPTS
 
 wandb.login(key=os.environ.get("WANDB_API_KEY", ""))
