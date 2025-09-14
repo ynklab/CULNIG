@@ -1,6 +1,6 @@
 ## Neuron-Level Analysis of Cultural Understanding in Large Language Models
 
-![pipeline](/assets/CULNIG_pipeline.pdf)
+![pipeline](/assets/CULNIG_pipeline.jpg)
 
 This repository contains code and datasets for the paper "Neuron-Level Analysis of Cultural Understanding in Large Language Models".
 
