@@ -234,6 +234,7 @@ def load_model(model_name, logger):
         torch_dtype=torch.bfloat16,
         attn_implementation='eager' if 'gemma-3' in model_name else 'sdpa',
     )
+    model = model.to('cuda')
     logger.info(f'successfully loaded model and tokenizer.')
     return model, tokenizer
 

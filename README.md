@@ -2,54 +2,85 @@
 
 ![pipeline](/assets/CULNIG_pipeline.jpg)
 
-This repository contains code and datasets for the paper "Neuron-Level Analysis of Cultural Understanding in Large Language Models".
-
-We introduce a method to identify culture-general and culture-specific neurons in LLMs, called CULNIG (Culture Neuron Identification Pipeline with Gradient-based Scoring).
+This repository provides code and datasets for the paper "Neuron-Level Analysis of Cultural Understanding in Large Language Models". We implement CULNIG (Culture Neuron Identification Pipeline with Gradient-based Scoring), a method to identify culture-general and culture-specific neurons in LLMs via gradient-based scoring.
 
 
 ## Setup
 
-- Install uv (reference: https://docs.astral.sh/uv/getting-started/installation/)
-- Install dependencies:
+- Install uv (see: https://docs.astral.sh/uv/getting-started/installation/)
+- Create a virtual environment and install dependencies:
 ```bash
-$ uv venv
-$ uv sync
+uv venv
+uv sync
 ```
-- Prepare datasets for identifying neurons and evaluating models (used in `dataset.py`)
-  - For BLEnD, users must download the question file (`US_questions.csv`) from [repo](https://github.com/nlee0212/BLEnD) and place it in the `data` directory.
-  - For WorldValuesBench, users must generate the dataset based on the instructions in the [repo](https://github.com/Demon702/WorldValuesBench) and place the generated files (`question_metadata.json`, `full_demographic_qa.tsv`, and `full_value_qa.tsv`) in the `data` directory.
+- Prepare datasets used by `dataset.py`:
+    - BLEnD: Download `US_questions.csv` from the [BLEnD repo](https://github.com/nlee0212/BLEnD) and place it under the `data/BLEnD/` directory (e.g., `data/BLEnD/US_questions.csv`).
+    - WorldValuesBench: Follow the instructions in the [WorldValuesBench repo](https://github.com/Demon702/WorldValuesBench), then place `question_metadata.json`, `full_demographic_qa.tsv`, and `full_value_qa.tsv` under `data/WorldValuesBench/`.
 
-## Scripts
 
-### CULNIG
+## CULNIG Pipeline
 
-- `CULNIG/calc_neuron_scores.py`: Calculate neuron scores on a specified dataset using gradient-based scoring.
-    - `$ uv run python CULNIG/calc_neuron_scores.py --model_name <model_name> --dataset_names blend`
-    - available models: `google/gemma-3-12b-it`, `google/gemma-3-27b-it`, `Qwen/Qwen3-14B`, `meta-llama/Llama-3.1-8B-Instruct`, `microsoft/phi-4`, `tiiuae/Falcon3-10B-Instruct`
-        - you can add other models by modifying the code.
-    - through the CULNIG pipeline, you need to calculate neuron scores on `blend` and `blendcontrol` datasets
-    - the script calculates neuron scores for CountryRC every time
-- `CULNIG/decide_culture_general_neurons.py`: Identify culture-general neurons based on the calculated neuron scores.
-    - `$ uv run python CULNIG/decide_culture_general_neurons.py --model_name <model_name> --dataset_names blend --method max`
-- `CULNIG/decide_culture_specific_neuron.py`: Identify culture-specific neurons based on the calculated neuron scores.
-    - `$ uv run python CULNIG/decide_culture_specific_neuron.py --model_name <model_name> --dataset_names blend --method max`
-- `CULNIG/decide_random_neuron.py`: Identify random neurons as a baseline.
-    - `$ uv run python CULNIG/decide_random_neuron.py --model_name <model_name> --mlp_neuron_num <num> --attention_neuron_num 0`
-    - currently, this script does not treat MLP and attention neurons separately and attention neurons are included in MLP neurons (to match CULNIG). You can modify the code if you want to treat them separately.
+- `CULNIG/calc_neuron_score.py`: Compute neuron scores on a target dataset using gradient-based scoring.
+    - Example:
+        ```bash
+        uv run python CULNIG/calc_neuron_score.py --model_name <model_name> --dataset_names blend
+        ```
+    - Available models: `google/gemma-3-12b-it`, `google/gemma-3-27b-it`, `Qwen/Qwen3-14B`, `meta-llama/Llama-3.1-8B-Instruct`, `microsoft/phi-4`, `tiiuae/Falcon3-10B-Instruct`
+        - You can add other models by extending the code.
+    - Through the pipeline, compute neuron scores for both `blend` and `blendcontrol`.
+    - Neuron scores for CountryRC are computed every time.
 
-### Evaluation
+- `CULNIG/decide_culture_general_neurons.py`: Identify culture-general neurons based on computed scores.
+    - Example:
+        ```bash
+        uv run python CULNIG/decide_culture_general_neurons.py --model_name <model_name> --dataset_names blend
+        ```
 
-- `eval/evaluate.py`: Evaluate the model on a specified dataset with optional neuron manipulation.
-    - `$ uv run python eval/evaluate.py --model_name <model_name> --dataset_name <dataset_name> --neuron_file <path_to_neuron_file> --operation suppress`
-    - if you want to evaluate without neuron manipulation, set `--neuron_file` to `None`
-    - available datasets: `blend`, `culturalbench`, `normad`, `worldvaluesbench`, `countryrc`, `commonsenseqa`, `qnli`, `mrpc`
-    - available operations: `suppress`, `enhance`
-    - the script saves the evaluation results in the `outputs` directory
-    - for BLEnD, the script evaluates on all questions (both BLEnD_neur and BLEnD_test). If you want to evaluate only on BLEnD_test, you can modify the code to load only the test questions as `target_data='all' -> 'non_neuron'`
+- `CULNIG/decide_culture_specific_neuron.py`: Identify culture-specific neurons based on computed scores.
+    - Example:
+        ```bash
+        uv run python CULNIG/decide_culture_specific_neuron.py --model_name <model_name> --dataset_names blend
+        ```
 
-### Fine-tuning
+- `CULNIG/decide_random_neuron.py`: Select random neurons as a baseline.
+    - Example:
+        ```bash
+        uv run python CULNIG/decide_random_neuron.py --model_name <model_name> --mlp_neuron_num <num> --attention_neuron_num 0
+        ```
+    - Note: This script currently does not treat MLP and attention neurons separately; attention neurons are included in MLP neurons (to match CULNIG). You can modify the code to separate them if desired.
+    - Run `CULNIG/calc_neuron_score.py` beforehand to populate model architecture info used here.
 
-- `train/train.py`: Fine-tune the model on a specified dataset, by updating specified modules.
-    - `$ uv run python train/train.py --config <path_to_config_file>`
-    - example config file is provided as `train/config.yaml`
-    - you can modify the config files to change the training settings
+
+## Evaluation
+
+- `eval/evaluate.py`: Evaluate a model on a dataset, with optional neuron manipulation.
+    - Example:
+        ```bash
+        uv run python eval/evaluate.py --model_name <model_name> --dataset_name <dataset_name> --neuron_file <path_to_neuron_file> --operation suppress
+        ```
+    - To evaluate without neuron manipulation, set `--neuron_file None`.
+    - Available datasets: `blend`, `culturalbench`, `normad`, `worldvaluesbench`, `countryrc`, `commonsenseqa`, `qnli`, `mrpc`
+    - Operations: `suppress`, `enhance`
+    - Results are saved under `outputs/`.
+    - For BLEnD, the script evaluates all questions (both BLEnD_neur and BLEnD_test). To evaluate only BLEnD_test, modify the code to load test questions only (`target_data='all' -> 'non_neuron'`).
+
+
+## Fine-tuning
+
+- `train/train.py`: Fine-tune a model on a dataset by updating specified modules.
+    - Example:
+        ```bash
+        uv run python train/train.py --config train/config.yaml
+        ```
+    - An example config is provided at `train/config.yaml`; edit as needed.
+    - To monitor with Weights & Biases, set environment variables beforehand:
+        ```bash
+        export WANDB_API_KEY=<your_wandb_api_key>
+        export WANDB_PROJECT=<your_wandb_project_name>
+        ```
+    - Trained models and training logs are saved in `model_outputs/` (or the directory configured in your settings).
+
+
+## Notes
+
+- Issues and contributions are welcome via GitHub Issues and PRs.

@@ -117,7 +117,7 @@ def evaluate_model(model, tokenizer, eval_dataset_name, logger, model_name, neur
 
             results.append({
                 'instruction_id': instruction_ids[i],
-                'id': ids[i],
+                'id': str(ids[i]),
                 'predicted_label': output,
                 'gold_label': str(labels[i]),
                 'alignment_score': alignment_score,
@@ -174,7 +174,6 @@ def main():
         neurons_to_manipulate = top_neurons
     neuron_country = Path(args.neuron_file).stem.split('_')[0] if args.neuron_file else None
     neuron_data_ids = neuron_scores['dataset_ids'][eval_dataset_name] if args.neuron_file and eval_dataset_name in neuron_scores['dataset_ids'] else None
-    neuron_data_ids = [int(id) for id in neuron_data_ids] if neuron_data_ids is not None else None
     if args.neuron_file:
         neuron_file_stem = Path(args.neuron_file).stem
         if 'random' in neuron_file_stem:

@@ -1,0 +1,12 @@
+# output
+output/
+
+# mode output
+model_outputs/
+
+# pycache
+**/__pycache__/
+
+# log
+logs/
+**/wandb/

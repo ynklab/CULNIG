@@ -20,7 +20,6 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Identify culture-general neurons based on pre-calculated scores.")
     parser.add_argument('--model_name', type=str, required=True, help='Name of the model to use.')
     parser.add_argument('--dataset_names', nargs='+', required=True, help='Names of the datasets to for scores. Can be a list of dataset names.')
-    parser.add_argument('--method', type=str, required=True, help='Name of the method for neuron identification.')
     return parser.parse_args()
 
 
@@ -38,12 +37,7 @@ def main():
     logger = setup_logging()
     dataset_names = args.dataset_names
     dataset_names.sort()  # Sort dataset names for consistent file naming
-    method = args.method
-    if method:
-        method_name = '_' + method
-    else:
-        method_name = ''
-    logger.info(f"Deciding cultural neurons for model: {args.model_name} on dataset: {dataset_names} using method: {method}")
+    logger.info(f"Deciding cultural neurons for model: {args.model_name} on dataset: {dataset_names}")
     logger.info(f'Hyper parameters: MLP_CULTURE_NEURON_PROPORTION={MLP_CULTURE_NEURON_PROPORTION}, MLP_COUNTRYRC_NEURON_PROPORTION={MLP_COUNTRYRC_NEURON_PROPORTION}')
     logger.info(f'Target modules: MLP_TARGET_MODULES={MLP_TARGET_MODULES}, Save modules: MLP_SAVE_MODULES={MLP_SAVE_MODULES}')
     logger.info(f'Hyper parameters: ATTENTION_CULTURE_NEURON_PROPORTION={ATTENTION_CULTURE_NEURON_PROPORTION}, ATTENTION_COUNTRYRC_NEURON_PROPORTION={ATTENTION_COUNTRYRC_NEURON_PROPORTION}')
@@ -54,8 +48,8 @@ def main():
     attention_neuron_scores = defaultdict(float)  # neuron_scores[f'{module_name}_{layer_idx}_{neuron_idx}'] = score
     dataset_ids = defaultdict(list)
     for dataset_name in dataset_names:
-        score_path = OUTPUT_DIR / args.model_name.split('/')[-1] / 'cultural_neuron' / f'{dataset_name}{method_name}_scores.json'
-        control_score_path = OUTPUT_DIR / args.model_name.split('/')[-1] / 'cultural_neuron' / f'{dataset_name}control{method_name}_scores.json'
+        score_path = OUTPUT_DIR / args.model_name.split('/')[-1] / 'cultural_neuron' / f'{dataset_name}_max_scores.json'
+        control_score_path = OUTPUT_DIR / args.model_name.split('/')[-1] / 'cultural_neuron' / f'{dataset_name}control_max_scores.json'
         if not score_path.exists():
             raise FileNotFoundError(f"Score file not found: {score_path}")
         if not control_score_path.exists():
@@ -102,7 +96,7 @@ def main():
     # 2. Load CountryRC scores, find the top r% neurons
     mlp_countryrc_neuron_scores = defaultdict(float)  # countryrc_neuron_scores[f'{module_name}_{layer_idx}_{neuron_idx}'] = score
     attention_countryrc_neuron_scores = defaultdict(float)  # countryrc_neuron_scores[f'{module_name}_{layer_idx}_{neuron_idx}'] = score
-    countryrc_score_path = OUTPUT_DIR / args.model_name.split('/')[-1] / 'cultural_neuron' / f'countryrc{method_name}_scores.json'
+    countryrc_score_path = OUTPUT_DIR / args.model_name.split('/')[-1] / 'cultural_neuron' / f'countryrc_max_scores.json'
     if not countryrc_score_path.exists():
         raise FileNotFoundError(f"CountryRC score file not found: {countryrc_score_path}")
     with open(countryrc_score_path, 'r') as f:
@@ -163,7 +157,7 @@ def main():
         'dataset_ids': dataset_ids,
         'top_neurons': refined_culture_neurons,
     }
-    output_path = OUTPUT_DIR / args.model_name.split('/')[-1] / 'cultural_neuron' / f'all_neurons_{''.join(dataset_names)}{method_name}.json'
+    output_path = OUTPUT_DIR / args.model_name.split('/')[-1] / 'cultural_neuron' / f'all_neurons_{''.join(dataset_names)}_max.json'
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, 'w') as f:
         json.dump(output_data, f, indent=4)
