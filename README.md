@@ -9,11 +9,11 @@ This repository provides code and datasets for the paper "Neuron-Level Analysis 
 
 - Install uv (see: https://docs.astral.sh/uv/getting-started/installation/)
 - Create a virtual environment and install dependencies:
+    - Adjust the `pyproject.toml` file to meet your environment if necessary.
 ```bash
 uv venv
 uv sync
 ```
-    - Adjust the `pyproject.toml` file to meet your environment if necessary.
 - Prepare datasets used by `dataset.py`:
     - BLEnD: Download `US_questions.csv` from the [BLEnD repo](https://github.com/nlee0212/BLEnD) and place it under the `data/BLEnD/` directory (e.g., `data/BLEnD/US_questions.csv`).
     - WorldValuesBench: Follow the instructions in the [WorldValuesBench repo](https://github.com/Demon702/WorldValuesBench), then place `question_metadata.json`, `full_demographic_qa.tsv`, and `full_value_qa.tsv` under `data/WorldValuesBench/`.
@@ -66,6 +66,15 @@ uv sync
     - Operations: `suppress`, `enhance`
     - Results are saved under `outputs/`.
     - For BLEnD, the script evaluates all questions (both BLEnD_neur and BLEnD_test). To evaluate only BLEnD_test, modify the code to load test questions only (`target_data='all' -> 'non_neuron'`).
+- `eval/evaluate_blend_saq.py`: Evaluate a model on BLEnD SAQs with optional neuron manipulation.
+    - Example:
+        ```bash
+        uv run python eval/evaluate_blend_saq.py --model_name <model_name> --neuron_file <path_to_neuron_file> --operation suppress
+        ```
+    - To evaluate without neuron manipulation, unset `--neuron_file`.
+    - Operations: `suppress`, `enhance`
+    - Results are saved under `outputs/blend_sqa`
+    - For judging correctness, we use lemmatizers/stemmers/tokenizers of each language, following the original BLEnD paper and [repo](https://github.com/nlee0212/BLEnD/tree/9972379c4fd20601691c45e6d7befa6a3eed7ed4). We place the codes for our evaluation in `eval/lemmatizers/`. You can use the scripts as `uv run python lemma.py --input_file <input_file>`. For the detailed usage of each script, please refer to the comments in the code.
 
 
 ## Fine-tuning
