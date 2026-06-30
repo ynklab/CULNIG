@@ -1,4 +1,4 @@
-## Neuron-Level Analysis of Cultural Understanding in Large Language Models
+## Neuron-Level Analysis of Cultural Understanding in Large Language Models ([Paper](https://arxiv.org/abs/2510.08284))
 
 ![pipeline](/assets/CULNIG_pipeline.jpg)
 
@@ -92,6 +92,23 @@ uv sync
         ```
     - Trained models and training logs are saved in `model_outputs/` (or the directory configured in your settings).
 
+## Citation
+
+If you find this work useful, please cite our paper:
+
+```
+@inproceedings{yamamoto2026neuronlevel,
+title={Neuron-Level Analysis of Cultural Understanding in Large Language Models},
+author={Taisei Yamamoto and Ryoma Kumon and Danushka Bollegala and Hitomi Yanaka},
+booktitle={The Fourteenth International Conference on Learning Representations},
+year={2026},
+url={https://openreview.net/forum?id=HZMmM3Dmri}
+}
+```
+
+## Contact
+
+For any questions or inquiries, please contact: yamamo96[at]is.s.u-tokyo.ac.jp
 
 ## Notes
 
